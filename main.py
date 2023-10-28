@@ -1,6 +1,6 @@
 from stats.math import *
 
-quanti = [ 32 , -2 , 3 , 4 , -5 , 6 ]
+quanti = [ 32 , -2 , 3 , 4 , 5 , 6 ]
 quali = [ 'B' , 'B' , 'B' , 'Y' , 'Y' , 'B' , 'Y' ]
 
 
@@ -18,3 +18,7 @@ print("le range(etendu) est "+str(etendu(quanti)))
 print("l'ecart type est "+str(ecrtype(quanti)))
 
 print("la variance est "+str(calculate_std(quanti)))
+
+quartilee(quanti)
+
+print("le EQR est "+str(calculate_eqr(quanti)))
