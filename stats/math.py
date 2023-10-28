@@ -1,18 +1,16 @@
-# mean$
-# median$
+# mean
+# median
 # quartile
 # variance
 # ecart type
-# min$
-# max$
+# min
+# max
 # EQR
-# Etendue$
+# Etendue
 
 def calculate_mean(numbers):
     mean = sum(numbers) / len(numbers)
     return mean
-
-
 def median(numbers):
     #verifier que la liste n'est pas vide
     if not numbers:
@@ -28,7 +26,6 @@ def median(numbers):
         return numbers[middle]
     else :
         return (numbers[middle -1] + numbers[middle])/2
-
 def minimum(numbers):
     #recupere le premier elem
     i = 0
@@ -37,9 +34,7 @@ def minimum(numbers):
     for i in range(1, len(numbers)):
         if(numbers[i]<min):
             min = numbers[i]
-
     return min
-
 def maximum(numbers):
     # recupere le premier elem
     i = 0
@@ -48,11 +43,16 @@ def maximum(numbers):
     for i in range(1, len(numbers)):
         if (numbers[i] > max):
             max = numbers[i]
-
     return max
-
 def etendu(numbers):
     return maximum(numbers)-minimum(numbers)
-
 def ecrtype(numbers):
-    return
+    ecrtyp = sum((x - calculate_mean(numbers))**2 for x in numbers)/(len(numbers))
+    return ecrtyp
+def calculate_std(numbers):
+    return etendu(numbers)**2
+
+
+def quartilee(numbers):
+    # les quartile sopnt des medians de median alors nous allon fonctionner ansi
+    numbers.sort()
