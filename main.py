@@ -1,24 +1,47 @@
 from stats.math import *
+import random
 
 quanti = [ 32 , -2 , 3 , 4 , 5 , 6 ]
 quali = [ 'B' , 'B' , 'B' , 'Y' , 'Y' , 'B' , 'Y' ]
 
+#V2
+# Demander à l'utilisateur de saisir la taille de la liste
+taille_liste = input("Veuillez entrer la taille de la liste que vous souhaitez : ")
+# S'assurer que la saisie est un nombre entier valide
+try:
+    taille_liste = int(taille_liste)
+    if taille_liste < 0:
+        print("Veuillez entrer un nombre entier positif.")
+    else:
+        # Créer et remplir la liste avec des nombres aléatoires
+        liste_utilisateur = [random.randint(0, 100) for _ in range(taille_liste)]
+        print(f"Voici votre liste de nombres aléatoires : {liste_utilisateur}")
 
-# Dans main.py
-print("la moyen est "+str(calculate_mean(quanti)))
+        while True:
+            choix = input("Entrez le nom de la fonction (median, mean, min, max, range, std, variance, quartiles, eqr) ou 'quit' pour quitter : ").lower()
 
-print("la median est "+str(median(quanti)))
+            if choix == 'median':
+                print("La médiane est " + str(median(liste_utilisateur)))
+            elif choix == 'mean':
+                print("La moyenne est " + str(calculate_mean(liste_utilisateur)))
+            elif choix == 'min':
+                print("Le minimum est " + str(minimum(liste_utilisateur)))
+            elif choix == 'max':
+                print("Le maximum est " + str(maximum(liste_utilisateur)))
+            elif choix == 'range':
+                print("Le range (étendue) est " + str(etendu(liste_utilisateur)))
+            elif choix == 'std':
+                print("L'écart type est " + str(ecrtype(liste_utilisateur)))
+            elif choix == 'variance':
+                print("La variance est " + str(calculate_std(liste_utilisateur)))
+            elif choix == 'quartiles':
+                quartilee(liste_utilisateur)
+            elif choix == 'eqr':
+                print("Le EQR est " + str(calculate_eqr(liste_utilisateur)))
+            elif choix == 'quit':
+                break
+            else:
+                print("Nom de fonction invalide. Veuillez réessayer.")
 
-print("le minimum est "+str(minimum(quanti)))
-
-print("le maximum est "+str(maximum(quanti)))
-
-print("le range(etendu) est "+str(etendu(quanti)))
-
-print("l'ecart type est "+str(ecrtype(quanti)))
-
-print("la variance est "+str(calculate_std(quanti)))
-
-quartilee(quanti)
-
-print("le EQR est "+str(calculate_eqr(quanti)))
+except ValueError:
+    print("Veuillez entrer un nombre entier.")
