@@ -1,9 +1,6 @@
 from stats.math import *
 import random
 
-quanti = [ 32 , -2 , 3 , 4 , 5 , 6 ]
-quali = [ 'B' , 'B' , 'B' , 'Y' , 'Y' , 'B' , 'Y' ]
-
 #V2
 # Demander à l'utilisateur de saisir la taille de la liste
 taille_liste = input("Veuillez entrer la taille de la liste que vous souhaitez : ")
