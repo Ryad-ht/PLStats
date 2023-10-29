@@ -8,9 +8,6 @@
 # EQR
 # Etendue
 
-#j'ai cree des variable globale car je voulais reutiliser q1 et q3 qui existe dans ma fonction quartile sans les rentre en parametre dans la fonction eqr
-q1 = None
-q3 = None
 def calculate_mean(numbers):
     mean = sum(numbers) / len(numbers)
     return mean
@@ -57,8 +54,6 @@ def calculate_std(numbers):
 
 
 def quartilee(numbers):
-    #j'indique que jutiliser des variable globales
-    global q1,q3
     # les quartile sont des medians de median alors nous allon fonctionner ansi
     numbers.sort()
     q2 = median(numbers)
@@ -72,6 +67,11 @@ def quartilee(numbers):
 
 
 def calculate_eqr(numbers):
-    #il sagit simplement de calculer le q3 moins le q1
+    numbers.sort()
+    q2 = median(numbers)
+    lower_half = [x for i, x in enumerate(numbers) if i < len(numbers) / 2]
+    upper_half = [x for i, x in enumerate(numbers) if i >= len(numbers) / 2]
+    q1 = median(lower_half)
+    q3 = median(upper_half)
     return q3-q1
 
