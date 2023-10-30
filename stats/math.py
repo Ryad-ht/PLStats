@@ -79,3 +79,4 @@ def shapiro_wilk(numbers):
     # trier les donner en ordre croissant et recuper la taille de lechantillion
     numbers.sort()
     n=len(numbers)
+
