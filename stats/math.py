@@ -7,7 +7,7 @@
 # max
 # EQR
 # Etendue
-
+ 
 def calculate_mean(numbers):
     mean = sum(numbers) / len(numbers)
     return mean
