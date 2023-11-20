@@ -61,6 +61,7 @@ class StatisticalTests:
         result = anosim(distance_matrix, group_data)
         return result
 
+
     def manova_test(self, dependent_vars, independent_var):
         # 'dependent_vars' est une liste de noms de variables dépendantes
         # 'independent_var' est le nom de la variable indépendante (facteur)
