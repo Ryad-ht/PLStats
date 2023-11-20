@@ -43,15 +43,16 @@ class StatisticalTests:
         # Combinaison des variables quantitatives pour créer une matrice de distance
         data_quantitative = pd.DataFrame({key: list(map(float, self.data_dict[key])) for key in quantitative_keys})
 
-        # Combinaison des données quantitatives
-        combined_quantitative_data = data_quantitative.mean(axis=1)
+        # Assurez-vous que les données sont en format approprié pour le calcul de distance
+        # Exemple : utiliser les valeurs sous forme de liste de listes
+        quantitative_data_formatted = data_quantitative.values.tolist()
 
         # Fonction pour calculer la distance euclidienne
         def euclidean_distance(u, v):
             return euclidean(u, v)
 
         # Création de la matrice de distance
-        distance_matrix = DistanceMatrix.from_iterable(combined_quantitative_data, metric=euclidean_distance)
+        distance_matrix = DistanceMatrix.from_iterable(quantitative_data_formatted, metric=euclidean_distance)
 
         # La variable qualitative pour les groupes
         group_data = self.data_dict[qualitative_key]
