@@ -34,9 +34,18 @@ class StatisticalTests:
         stat, p = stats.wilcoxon(data1, data2)
         return {'statistic': stat, 'p-value': p}
 
-    def kruskal_wallis_test(self, keys):
-        data_groups = [list(map(float, self.data_dict[key])) for key in keys]
-        stat, p_val = stats.kruskal(*data_groups)
+    def kruskal_wallis_test(self, quantitative_key, qualitative_keys):
+        # Création d'un DataFrame pour les analyses
+        data = pd.DataFrame({quantitative_key: self.data_dict[quantitative_key]})
+        for qual_key in qualitative_keys:
+            data[qual_key] = self.data_dict[qual_key]
+
+        # Regrouper les données par les variables qualitatives et calculer les statistiques
+        grouped_data = data.groupby(qualitative_keys).agg('mean')  # ou utilisez une autre statistique appropriée
+
+        # Appliquer le test de Kruskal-Wallis sur les groupes
+        stat, p_val = stats.kruskal(
+            *[group for name, group in grouped_data[quantitative_key].groupby(qualitative_keys)])
         return {'Statistic': stat, 'p-value': p_val}
 
     def anosim_test(self, quantitative_keys, qualitative_key):
