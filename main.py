@@ -39,29 +39,22 @@ def determiner_et_effectuer_test(cles):
     print(f"Clés sélectionnées pour le test : {cles}")
     types = [tests_statistiques.is_categorical(cle) for cle in cles]
 
-    # Gérer les cas avec des variables mixtes (quantitatives et qualitatives)
+    # Cas où il y a mélange de variables quantitatives et qualitatives
     if any(types) and not all(types):
-        # Séparer les clés quantitatives et qualitatives
         cles_quantitatives = [cle for cle, is_cat in zip(cles, types) if not is_cat]
         cles_qualitatives = [cle for cle, is_cat in zip(cles, types) if is_cat]
 
-        if len(cles_quantitatives) > 0 and len(cles_qualitatives) > 0:
-            # Vérifier la normalité des variables quantitatives
-            is_normal = all([tests_statistiques.check_normality(cle) for cle in cles_quantitatives])
+        # Si une seule variable quantitative et une ou plusieurs variables qualitatives
+        if len(cles_quantitatives) == 1 and len(cles_qualitatives) >= 1:
+            is_normal = tests_statistiques.check_normality(cles_quantitatives[0])
 
             if is_normal:
-                if len(cles_quantitatives) > 1:
-                    print(f"Effectuer une MANOVA pour les variables : {cles}.")
-                    # Appel de la méthode MANOVA (à implémenter)
-                else:
-                    print(f"Effectuer une ANOVA pour les variables : {cles}.")
-                    # Appel de la méthode ANOVA
-                    result = tests_statistiques.anova_test(cles)
+                print(f"Effectuer une ANOVA pour les variables : {cles}.")
+                result = tests_statistiques.anova_test(cles)
             else:
-                print(f"Effectuer un ANOSIM pour les variables : {cles}.")
-                # Appel de la méthode ANOSIM
-                # Note: Vous devez spécifier les clés pour les variables qualitative et quantitative
-                result = tests_statistiques.anosim_test(cles_quantitatives, cles_qualitatives[0])
+                print(f"Effectuer un Kruskal-Wallis pour les variables : {cles}.")
+                result = tests_statistiques.kruskal_wallis_test(cles)
+        # Autres cas
         else:
             print("Effectuer un test approprié pour les variables sélectionnées.")
             result = None
@@ -72,7 +65,5 @@ def determiner_et_effectuer_test(cles):
     print("Résultat du test statistique :")
     print(result)
 
-
 # Exécution du test statistique
 determiner_et_effectuer_test(cles_choisies)
-
