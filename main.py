@@ -1,165 +1,78 @@
-from stats.math import *
-import random
+# Importation des modules nécessaires
 import csv
-import random
+from stats import StatisticalTests  # Assurez-vous que cette classe existe dans votre module stats
 
+# Chemin vers le fichier de données
 data2 = 'data_2 - data_2.csv'
 
-donnees_liste = []
-
-with open(data2, mode='r', encoding='utf-8') as fichier:
-    lecteur_data2 = csv.reader(fichier)
-    for ligne in lecteur_data2:
-        donnees_liste.append(ligne)
-
-donnees_colonnes = list(zip(*donnees_liste))
-
-# Créer un dictionnaire pour stocker les listes avec des noms
+# Lecture des données à partir du fichier CSV et stockage dans un dictionnaire
 donnees_dict = {}
+with open(data2, mode='r', encoding='utf-8') as fichier:
+    lecteur_data2 = csv.DictReader(fichier)
+    for ligne in lecteur_data2:
+        for cle, valeur in ligne.items():
+            # Remplacer la virgule par un point dans les valeurs
+            valeur_modifiee = valeur.replace(',', '.')
+            if cle not in donnees_dict:
+                donnees_dict[cle] = []
+            donnees_dict[cle].append(valeur_modifiee)
 
-# Parcourir chaque colonne et l'ajouter au dictionnaire avec le premier élément comme clé
-for colonne in donnees_colonnes:  # Exclure la dernière colonne
-    nom_colonne = colonne[0]
-    donnees_dict[nom_colonne] = list(colonne[1:])
+# Affichage des clés disponibles dans le dictionnaire pour que l'utilisateur puisse choisir
+print("Voici les clés disponibles :")
+for cle in donnees_dict.keys():
+    print(cle)
 
-# Afficher les listes nommées
-for nom, valeurs in donnees_dict.items():
-    print(f"{nom}: {valeurs}")
+# Demander à l'utilisateur d'entrer les clés des données à analyser
+cle_utilisateur = input("Entrez les clés des données que vous souhaitez analyser (séparées par une virgule) : ")
+cles_choisies = [cle.strip() for cle in cle_utilisateur.split(',')]  # Nettoie les espaces avant et après les entrées
 
+# Création d'une instance de la classe StatisticalTests
+tests_statistiques = StatisticalTests(donnees_dict)
 
-#maintenant a partir d'ici je veut q'un choix aleatoire s fasse entre des choix de statistique
-# Liste des métriques
+# Fonction principale pour déterminer quel test statistique effectuer
+def determiner_et_effectuer_test(cles):
+    for cle in cles:
+        if cle not in donnees_dict:
+            print(f"La clé '{cle}' n'a pas été trouvée. Veuillez vérifier votre saisie.")
+            return
 
-# Dictionnaire des tests et leurs descriptions
-tests = {
-    "one-sample t-test": {
-        "description": "Teste si la moyenne d'un échantillon unique diffère d'une valeur de population connue.",
-        "parametrique": True,
-        "variables_categorielles": 0,
-        "nombre_modalites": 1,
-        "variables_a_tester": 1
-    },
-    "independent t-test": {
-        "description": "Compare les moyennes de deux groupes indépendants.",
-        "parametrique": True,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2,
-        "variables_a_tester": 1
-    },
-    "sign test": {
-        "description": "Test non paramétrique pour comparer les médianes de deux échantillons appariés.",
-        "parametrique": False,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2,
-        "variables_a_tester": 1
-    },
-    "Wilcoxon signed-rank test": {
-        "description": "Test non paramétrique pour comparer deux échantillons appariés.",
-        "parametrique": False,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2,
-        "variables_a_tester": 1
-    },
-    "Wilcoxon rank-sum test": {
-        "description": "Test non paramétrique pour comparer les médianes de deux groupes indépendants.",
-        "parametrique": False,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2,
-        "variables_a_tester": 1
-    },
-    "paired t-test": {
-        "description": "Compare les moyennes de deux échantillons appariés.",
-        "parametrique": True,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2,
-        "variables_a_tester": 1
-    },
-    "Kruskal-Wallis": {
-        "description": "Version non paramétrique de l'ANOVA pour trois groupes ou plus.",
-        "parametrique": False,
-        "variables_categorielles": 1,
-        "nombre_modalites": 3, # ou plus
-        "variables_a_tester": 1
-    },
-    "ANOVA": {
-        "description": "Analyse de variance pour comparer les moyennes de trois groupes ou plus.",
-        "parametrique": True,
-        "variables_categorielles": 1,
-        "nombre_modalites": 3, # ou plus
-        "variables_a_tester": 1
-    },
-    "MANOVA": {
-        "description": "Version multivariée de l'ANOVA, teste plusieurs variables de réponse.",
-        "parametrique": True,
-        "variables_categorielles": 1,
-        "nombre_modalites": 3, # ou plus
-        "variables_a_tester": 2 # ou plus
-    },
-    "ANOSIM": {
-        "description": "Test non paramétrique pour l'analyse de similarité entre groupes.",
-        "parametrique": False,
-        "variables_categorielles": 1,
-        "nombre_modalites": 2, # ou plus
-        "variables_a_tester": 1
-    }
-}
+    print(f"Clés sélectionnées pour le test : {cles}")
+    types = [tests_statistiques.is_categorical(cle) for cle in cles]
 
-# Sélection aléatoire d'un test
-choix_test = random.choice(list(tests.keys()))
+    # Gérer les cas avec des variables mixtes (quantitatives et qualitatives)
+    if any(types) and not all(types):
+        # Séparer les clés quantitatives et qualitatives
+        cles_quantitatives = [cle for cle, is_cat in zip(cles, types) if not is_cat]
+        cles_qualitatives = [cle for cle, is_cat in zip(cles, types) if is_cat]
 
-# Affichage des détails du test choisi
-details_test = tests[choix_test]
-print(f"Test sélectionné : {choix_test}")
-print(f"Description : {details_test['description']}")
-print(f"Paramétrique : {'Oui' if details_test['parametrique'] else 'Non'}")
-print(f"Nombre de variables catégorielles : {details_test['variables_categorielles']}")
-print(f"Nombre de modalités : {details_test['nombre_modalites']}")
-print(f"Nombre de variables à tester : {details_test['variables_a_tester']}")
+        if len(cles_quantitatives) > 0 and len(cles_qualitatives) > 0:
+            # Vérifier la normalité des variables quantitatives
+            is_normal = all([tests_statistiques.check_normality(cle) for cle in cles_quantitatives])
+
+            if is_normal:
+                if len(cles_quantitatives) > 1:
+                    print(f"Effectuer une MANOVA pour les variables : {cles}.")
+                    # Appel de la méthode MANOVA (à implémenter)
+                else:
+                    print(f"Effectuer une ANOVA pour les variables : {cles}.")
+                    # Appel de la méthode ANOVA
+                    result = tests_statistiques.anova_test(cles)
+            else:
+                print(f"Effectuer un ANOSIM pour les variables : {cles}.")
+                # Appel de la méthode ANOSIM
+                # Note: Vous devez spécifier les clés pour les variables qualitative et quantitative
+                result = tests_statistiques.anosim_test(cles_quantitatives, cles_qualitatives[0])
+        else:
+            print("Effectuer un test approprié pour les variables sélectionnées.")
+            result = None
+    else:
+        print("Veuillez sélectionner une combinaison appropriée de variables qualitatives et quantitatives.")
+        result = None
+
+    print("Résultat du test statistique :")
+    print(result)
 
 
-
-
-
-
-# #V2
-# # Demander à l'utilisateur de saisir la taille de la liste
-# taille_liste = input("Veuillez entrer la taille de la liste que vous souhaitez : ")
-# # S'assurer que la saisie est un nombre entier valide
-# try:
-#     taille_liste = int(taille_liste)
-#     if taille_liste < 0:
-#         print("Veuillez entrer un nombre entier positif.")
-#     else:
-#         # Créer et remplir la liste avec des nombres aléatoires
-#         liste_utilisateur = [random.randint(0, 100) for _ in range(taille_liste)]
-#         print(f"Voici votre liste de nombres aléatoires : {liste_utilisateur}")
-#
-#         while True:
-#             choix = input("Entrez le nom de la fonction (median, mean, min, max, range, std, variance, quartiles, eqr) ou 'quit' pour quitter : ").lower()
-#
-#             if choix == 'median':
-#                 print("La médiane est " + str(median(liste_utilisateur)))
-#             elif choix == 'mean':
-#                 print("La moyenne est " + str(calculate_mean(liste_utilisateur)))
-#             elif choix == 'min':
-#                 print("Le minimum est " + str(minimum(liste_utilisateur)))
-#             elif choix == 'max':
-#                 print("Le maximum est " + str(maximum(liste_utilisateur)))
-#             elif choix == 'range':
-#                 print("Le range (étendue) est " + str(etendu(liste_utilisateur)))
-#             elif choix == 'std':
-#                 print("L'écart type est " + str(ecrtype(liste_utilisateur)))
-#             elif choix == 'variance':
-#                 print("La variance est " + str(calculate_std(liste_utilisateur)))
-#             elif choix == 'quartiles':
-#                 quartilee(liste_utilisateur)
-#             elif choix == 'eqr':
-#                 print("Le EQR est " + str(calculate_eqr(liste_utilisateur)))
-#             elif choix == 'quit':
-#                 break
-#             else:
-#                 print("Nom de fonction invalide. Veuillez réessayer.")
-#
-# except ValueError:
-#      print("Veuillez entrer un nombre entier.")
+# Exécution du test statistique
+determiner_et_effectuer_test(cles_choisies)
 
