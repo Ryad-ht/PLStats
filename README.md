@@ -14,7 +14,7 @@ bonus le programe fait tout seul comme montré sur la fiche ❌
 ![Capture d’écran 2023-10-28 192734](https://github.com/Ryad-ht/PLStats/assets/125749863/00b59899-48be-47e9-81b6-09abe9c9776f)
 source bastos12
 
-
+etaps 6 faire de se projet le projet IA (a voir comment integrer)
 
 
 c'est un projet demander dans le cours du Professeur Mr bastos12 github : https://github.com/bastos12
